@@ -4,7 +4,7 @@ var url="https://collectorsblog.herokuapp.com";
 var app = new Vue ( {
   el:"#app", // id in an HTML element
 
-
+//this is a change
   data:{
     variable: "",
     greeting: "Hello vuedify",
