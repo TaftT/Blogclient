@@ -5,6 +5,7 @@ var app = new Vue ( {
   el:"#app", // id in an HTML element
 
 //this is a change
+//this is a change
   data:{
     variable: "",
     greeting: "Hello vuedify",
