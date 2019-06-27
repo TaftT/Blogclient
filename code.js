@@ -1,6 +1,8 @@
+//var url="http://localhost:3000";
+var url="https://collectorsblog.herokuapp.com";
+
 var app = new Vue ( {
   el:"#app", // id in an HTML element
-
 
 
   data:{
@@ -41,7 +43,7 @@ var app = new Vue ( {
 
   methods: {
     getPosts:  function(){
-        fetch("http://localhost:3000/posts").then(function (response) {
+        fetch(`${url}/posts`).then(function (response) {
           console.log(response.status)
           response.json().then(function (data) {
             app.posts=data.posts
@@ -54,7 +56,7 @@ var app = new Vue ( {
       this.newPost.date= new Date();
       this.posts.unshift(this.newPost);
       this.page = "blog";
-      fetch("http://localhost:3000/posts", {
+      fetch(`${url}/posts`, {
       method:"POST",
       headers:{
         "Content-type": "application/json"
