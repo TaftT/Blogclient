@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900|Material+Icons" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  <title>Blog App</title>
+</head>
+<body>
+  <div id="app" v-cloak>
+    <v-app>
+      <v-content>
+        <v-toolbar>
+          <v-toolbar-side-icon @click="drawer = !drawer"></v-toolbar-side-icon>
+          <v-toolbar-title>A Collector's Blog</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-toolbar-items>
+            <v-btn flat @click="page='blog'">Blog</v-btn>
+            <v-btn flat @click="page='post'">Post</v-btn>
+          </v-toolbar-items>
+        </v-toolbar>
+        <v-navigation-drawer app v-model="drawer">
+          <v-list>
+            <v-list-tile v-for="post in posts">
+              <v-list-content @click="page='thepost'" :value="post.title" v-model="thePost">{{post.title}}</v-list-content>
+            </v-list-tile>
+          </v-list>
+        </v-navigation-drawer>
+
+        <v-container v-if="page == 'blog'"
+        grid-list-lg
+        fluid>
+          <v-layout>
+            <v-flex xs3></v-flex>
+            <v-flex xs6 text-xs-center>
+              <v-layout column>
+                <v-flex>
+
+                  <v-select
+                    outline
+                    :items="categories"
+                    label="Category"
+                    v-model= "selectedCategory"
+                  ></v-select>
+
+                </v-flex>
+                <v-flex v-for="post in sortedPosts">
+
+                  <v-card grid-list-lg>
+                    <v-card-title primary-title class="display-1">{{post.title}}</v-card-title>
+                    <v-img
+                    v-if="post.image != ''"
+                    :src="post.image"
+                    aspect-ratio="2.75"
+                    ></v-img>
+                    <div>{{post.author}}</div>
+                    <div>{{post.date}}</div>
+                    <div>{{post.category}}</div>
+                    <v-expansion-panel flat>
+                      <v-expansion-panel-content>
+                        <template v-slot:header>
+                            <div>Read Post:</div>
+                        </template>
+
+                        <div>{{post.text}}</div>
+
+                      </v-expansion-panel-content>
+                    </v-expansion-panel>
+                  </v-card>
+
+                </v-flex>
+              </v-layout>
+
+            </v-flex>
+            <v-flex xs3></v-flex>
+          </v-layout>
+        </v-container>
+
+        <v-container v-if="page == 'post'"
+        grid-list-lg
+        fluid>
+          <v-layout>
+            <v-flex xs3></v-flex>
+            <v-flex xs6 text-xs-center>
+              <v-card>
+                <v-card-text>
+                <v-card-title outline class="display-2">New Post</v-card-title>
+                <v-text-field outline v-model="newPost.title" label="Title" :counter="25" required></v-text-field>
+                <v-text-field outline v-model="newPost.author" label="Author" :counter="25" required></v-text-field>
+                <v-text-field outline v-model="newPost.image" label="URL for image"></v-text-field>
+                <v-select
+                  outline
+                  :items="categories"
+                  label="Category"
+                  v-model="newPost.category"
+                ></v-select>
+                <v-textarea
+                  outline
+                  v-model="newPost.text"
+                  label="Post Text"
+        ></v-textarea>
+                <v-btn @click="submitPost()">submit</v-btn>
+
+                </v-card-text>
+              </v-card>
+            </v-flex>
+            <v-flex xs3></v-flex>
+          </v-layout>
+        </v-container>
+
+        <!-- <v-container v-if="page == 'thepost'"
+        grid-list-lg
+        fluid>
+          <v-layout>
+            <v-flex xs3></v-flex>
+            <v-flex xs6 text-xs-center>
+              <v-card>
+                <v-card-title primary-title class="display-1">{{selectedPost.title}}</v-card-title>
+                <v-img
+                v-if="selectedPost.image != ''"
+                :src="selectedPost.image"
+                aspect-ratio="2.75"
+                ></v-img>
+                <div>{{selectedPost.author}}</div>
+                <div>{{selectedPost.date}}</div>
+                <div>{{selectedPost.category}}</div>
+                <div>{{selectedPost.text}}</div>
+
+                  </v-expansion-panel-content>
+                </v-expansion-panel>
+              </v-card>
+            </v-flex>
+            <v-flex xs3></v-flex>
+          </v-layout>
+        </v-container> -->
+        <!-- <h1>{{greeting}}</h1>
+    <div>A Collector's blog</div>
+    <button @click="page='blog'">Blog</button>
+    <button @click="page='post'">Post</button> <br>
+    <div v-if="page == 'blog'">
+    <select v-model= "selectedCategory">
+      <option
+          v-for="category in categories"
+          v-bind:value="category">
+          {{category}}
+      </option>
+    </select>
+
+
+      <div v-for="post in sortedPosts">
+        <img v-if="post.image != ''" :src="post.image" width="500" height="500" alt="">
+        <div>{{post.title}}</div>
+        <div>{{post.author}}</div>
+        <div>{{post.text}}</div>
+        <div>{{post.date}}</div>
+        <div>{{post.category}}</div>
+
+
+      </div>
+    </div>
+
+    <div v-if="page == 'post'">
+      Title <input type="text" v-model="newPost.title"> <br>
+      Author <input type="text" v-model="newPost.author"> <br>
+      URL for image <input type="text" v-model="newPost.image"> <br>
+      Category: <select v-model= "newPost.category">
+        <option
+            v-for="category in categories"
+            v-bind:value="category">
+            {{category}}
+        </option>
+      </select> <br>
+      Date:{{newPost.date}} <br>
+      <textarea v-model="newPost.text" cols="30" rows="10"></textarea><br>
+      <button @click="submitPost()">submit</button>
+    </div> -->
+
+
+
+
+
+
+      </v-content>
+    </v-app>
+  </div>
+</body>
+
+<script src="https://cdn.jsdelivr.net/npm/vue"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify/dist/vuetify.js"></script>
+<script src="code.js"></script>
+</html>
